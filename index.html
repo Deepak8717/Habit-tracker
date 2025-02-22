@@ -3,124 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>15-Minute Habit Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 20px;
-        }
-        .tracker {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            max-width: 400px;
-            margin: auto;
-        }
-        .slot {
-            padding: 10px;
-            border: 2px solid #000;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .tracked {
-            background-color: lightgreen;
-        }
-        .accordion {
-            width: 100%;
-            max-width: 450px;
-            margin: auto;
-            text-align: left;
-        }
-        .accordion-item {
-            border-bottom: 1px solid #ccc;
-        }
-        .accordion-header {
-            background: #f4f4f4;
-            padding: 10px;
-            cursor: pointer;
-        }
-        .accordion-content {
-            display: none;
-            padding: 10px;
-        }
-    </style>
+    <title>Simple Habit Tracker</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>15-Minute Habit Tracker</h1>
-    
-    <div class="accordion" id="history"></div>
-    
-    <h2>Today</h2>
-    <div class="tracker" id="tracker"></div>
-    <button onclick="resetTracker()">Reset</button>
-    
-    <script>
-        const tracker = document.getElementById("tracker");
-        const history = document.getElementById("history");
-        const today = new Date().toISOString().split('T')[0];
-        const slots = [];
-        
-        let habitData = JSON.parse(localStorage.getItem("habitTracker")) || {};
-        
-        function createSlot(time, date) {
-            const slot = document.createElement("div");
-            slot.classList.add("slot");
-            slot.textContent = time;
-            if (habitData[date] && habitData[date].includes(time)) {
-                slot.classList.add("tracked");
-            }
-            slot.addEventListener("click", () => {
-                slot.classList.toggle("tracked");
-                saveProgress(date);
-            });
-            return slot;
-        }
-        
-        function saveProgress(date) {
-            habitData[date] = Array.from(document.querySelectorAll(".tracker .tracked"))
-                .map(slot => slot.textContent);
-            localStorage.setItem("habitTracker", JSON.stringify(habitData));
-        }
-        
-        function loadDay(date) {
-            const section = document.createElement("div");
-            section.classList.add("accordion-item");
-            section.innerHTML = `
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                    ${date} (Tracked: ${habitData[date]?.length || 0})
-                </div>
-                <div class="accordion-content tracker"></div>
-            `;
-            const content = section.querySelector(".accordion-content");
-            for (let i = 0; i < 96; i++) {
-                const time = `${Math.floor(i / 4)}:${(i % 4) * 15}`.padStart(5, '0');
-                content.appendChild(createSlot(time, date));
-            }
-            history.prepend(section);
-        }
-        
-        function toggleAccordion(header) {
-            const content = header.nextElementSibling;
-            content.style.display = content.style.display === "block" ? "none" : "block";
-        }
-        
-        for (let i = 0; i < 96; i++) {
-            const time = `${Math.floor(i / 4)}:${(i % 4) * 15}`.padStart(5, '0');
-            tracker.appendChild(createSlot(time, today));
-            slots.push(time);
-        }
-        
-        saveProgress(today);
-        
-        Object.keys(habitData).forEach(date => {
-            if (date !== today) loadDay(date);
-        });
-        
-        function resetTracker() {
-            document.querySelectorAll(".tracker .tracked").forEach(slot => slot.classList.remove("tracked"));
-            saveProgress(today);
-        }
-    </script>
+    <h1>Habit Tracker</h1>
+    <div id="history"></div>
+    <script src="script.js"></script>
 </body>
 </html>
