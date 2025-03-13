@@ -1,0 +1,30 @@
+src/index.html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simple Habit Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Habit Tracker</h1>
+      <div class="settings">
+        <div class="setting-group">
+          <label for="slotSizeSelector">Time Slot Size:</label>
+          <select id="slotSizeSelector">
+            <!-- Will be populated by JavaScript -->
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <button id="loadPrevious">Load Previous Day</button>
+      <div id="history"></div>
+    </main>
+
+    <script src="js/script.js"></script>
+  </body>
+</html>

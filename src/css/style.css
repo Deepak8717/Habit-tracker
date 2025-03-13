@@ -1,0 +1,86 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 20px;
+  margin: 0;
+}
+
+.tracker {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 5px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 10px;
+}
+
+.slot {
+  padding: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s;
+  font-size: 12px;
+  border-radius: 4px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slot-large {
+  grid-column: span 8;
+}
+.settings {
+  position: sticky;
+  top: 0;
+  background: white;
+  padding: 10px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+#slotSizeSelector {
+  margin: 10px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+#loadPrevious {
+  margin: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+select {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+button {
+  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button:hover {
+  background-color: #e0e0e0;
+}
+@media (max-width: 600px) {
+  .tracker {
+    grid-template-columns: repeat(auto-fill);
+    max-width: 100%;
+  }
+
+  .slot {
+    font-size: 10px;
+    padding: 5px;
+  }
+}
