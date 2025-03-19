@@ -1,25 +1,11 @@
 import { createDayElement } from "./components/calendarUI.js";
-
-// Date Constants
-const today = new Date();
-const currentYear = today.getFullYear();
-const currentMonth = today.getMonth();
-const currentDay = today.getDate();
-
-export const monthNames = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import EventBus from "./state/eventBus.js";
+import {
+  MONTH_NAMES,
+  currentYear,
+  currentMonth,
+  currentDay,
+} from "./constant.js";
 
 // Utility Function
 function daysInMonth(year, month) {
@@ -30,7 +16,7 @@ function daysInMonth(year, month) {
 function createMonthLabel(month) {
   const label = document.createElement("div");
   label.classList.add("month-label");
-  label.textContent = monthNames[month];
+  label.textContent = MONTH_NAMES[month];
   return label;
 }
 
@@ -65,7 +51,18 @@ function createMonthGrid(year, month) {
 
   return grid;
 }
-
+EventBus.subscribe("slotUpdated", ({ dayKey, updatedProgress }) => {
+  const slots = document.querySelectorAll(".slot");
+  slots.forEach((slot) => {
+    const range = slot.textContent;
+    slot.classList.remove("state-1", "state-2");
+    if (updatedProgress[dayKey]?.[range] === 1) {
+      slot.classList.add("state-1");
+    } else if (updatedProgress[dayKey]?.[range] === 2) {
+      slot.classList.add("state-2");
+    }
+  });
+});
 // Main Function
 export function renderCalendar() {
   const main = document.querySelector("main");

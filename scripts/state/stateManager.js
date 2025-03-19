@@ -5,7 +5,6 @@ export function toggleSlot(range, dayKey) {
   const dayProgress = savedProgress[dayKey] || {};
   const slots = Object.keys(dayProgress).sort();
 
-  console.clear();
   if (dayProgress[range]) {
     delete dayProgress[range];
   } else {
