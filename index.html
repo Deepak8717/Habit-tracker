@@ -3,29 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sobriety Tracker</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <title>Habit Tracker</title>
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <header>
       <h1>Habit Tracker</h1>
     </header>
 
-    <main></main>
-
-    <!-- Popup Modal -->
-    <div id="popup-overlay" class="overlay">
-      <div id="popup" class="popup">
-        <div class="popup-content">
-          <button id="close-popup">X</button>
-          <h2>Select Your Work Hours</h2>
-          <div id="time-slots" class="time-slots">
-            <!-- JavaScript will populate slots -->
-          </div>
+    <main>
+      <div id="calendar"></div>
+    </main>
+    <div id="popup-overlay" class="overlay hidden"></div>
+    <div id="slot-popup" class="popup hidden">
+      <div class="popup-content">
+        <button id="close-popup">X</button>
+        <h3>Select Time Slots</h3>
+        <div class="popup-header"></div>
+        <div class="slot-options">
+          <!-- Slots will be added dynamically using JS -->
         </div>
       </div>
     </div>
+
     <!-- JavaScript will populate this -->
-    <script type="module" src="scripts/main.js"></script>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>

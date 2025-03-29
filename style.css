@@ -1,0 +1,157 @@
+/* Calendar container */
+#calendar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px; /* Space between months */
+}
+h1 {
+  text-align: center;
+}
+/* Month container (Fixed Square Box) */
+.month-container {
+  width: 300px; /* Fixed width */
+  height: 250px; /* Fixed height */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Month header */
+.month-header {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+/* Weekday row */
+.weekdays-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+/* Weekday labels */
+.weekday {
+  padding: 3px;
+}
+
+/* Days grid */
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Empty slots before first day */
+.empty-slot {
+  visibility: hidden;
+}
+#close-popup {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+}
+
+#close-popup:hover {
+  color: #ff0000; /* Optional: Turns red when hovered */
+}
+
+/* Date button */
+.day-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ebebeb;
+}
+
+.day-btn:hover {
+  opacity: 0.5;
+}
+
+/* Selected date */
+.day-btn.selected {
+  background-color: #4caf50;
+  color: white;
+  font-weight: bold;
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+  display: none;
+  z-index: 9;
+}
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 300px;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: none; /* Hidden by default */
+  z-index: 10;
+}
+
+.hidden {
+  display: none;
+}
+
+.popup-content {
+  text-align: center;
+}
+
+.slot-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.slot-btn {
+  padding: 8px;
+  border: none;
+  background: #f0f0f0;
+  cursor: pointer;
+  width: 52px;
+  height: 42px;
+}
+.level-1 {
+  background-color: #b4ec18; /* Bright Lime */
+}
+
+.level-2 {
+  background-color: #4bdd4b; /* Fresh Green */
+}
+
+.level-3 {
+  background-color: #088908; /* Rich Green */
+  color: white;
+}
