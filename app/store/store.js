@@ -1,5 +1,5 @@
-import Debug from "./debug.js";
-import UI from "./ui.js";
+import Debug from "../debug.js";
+import UI from "../ui.js";
 
 class HabitStore {
   constructor() {

@@ -1,6 +1,6 @@
 import Calendar from "./calendar.js";
 import { showPopup } from "./slotPopup.js";
-import HabitStore from "./store.js";
+import HabitStore from "./store/store.js";
 const UI = {
   calendar: document.getElementById("calendar"),
   selectedDate: null,
@@ -42,7 +42,7 @@ const UI = {
         const dayBtn = document.createElement("button");
         dayBtn.textContent = day.day;
         dayBtn.className = "day-btn";
-        dayBtn.dataset.date = day.date; // Fix: Add data-date attribute
+        dayBtn.dataset.date = day.date;
         daysGrid.appendChild(dayBtn);
       });
 
@@ -60,9 +60,7 @@ const UI = {
     }, 100);
   },
   updateDayColor(dayElement, date) {
-    const slotCount = HabitStore.getDayLevel(date); // Get how many slots are selected
-
-    // Remove previous slot classes
+    const slotCount = HabitStore.getDayLevel(date);
     dayElement.classList.remove("level-1", "level-2", "level-3");
 
     if (slotCount === 1) dayElement.classList.add("level-1");

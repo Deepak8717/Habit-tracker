@@ -1,4 +1,4 @@
-import HabitStore from "./store.js";
+import HabitStore from "./store/store.js";
 const slotPopup = document.getElementById("slot-popup");
 const slotOptionsContainer = document.querySelector(".slot-options");
 const overlay = document.getElementById("popup-overlay");
