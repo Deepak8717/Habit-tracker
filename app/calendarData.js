@@ -1,4 +1,4 @@
-class Calendar {
+class calendarData {
   static generateYearlyCalendar() {
     const today = new Date();
     const startOfYear = new Date(today.getFullYear(), 0, 1);
@@ -18,9 +18,10 @@ class Calendar {
         currentMonth = monthName;
         monthDays = [];
       }
-
+      const localDate = new Date(d);
+      const formattedDate = localDate.toLocaleDateString("en-CA");
       monthDays.push({
-        date: d.toISOString().split("T")[0],
+        date: formattedDate,
         day: d.getDate(),
         weekday: d.getDay(),
       });
@@ -31,4 +32,4 @@ class Calendar {
   }
 }
 
-export default Calendar;
+export default calendarData;
