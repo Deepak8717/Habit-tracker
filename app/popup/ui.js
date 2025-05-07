@@ -39,6 +39,8 @@ export function renderHeader(date, selectedSlots, refreshPopup) {
 }
 export function renderSlots(date, refreshPopup) {
   const selectedSlots = HabitStore.getSlots(date);
+  console.log("Selected slots:", selectedSlots);
+  slotOptionsContainer.innerHTML = "";
   timeSlots.forEach((slot) => {
     const btn = document.createElement("button");
     btn.textContent = `${slot}-${slot + 2}`;
@@ -51,9 +53,20 @@ export function renderSlots(date, refreshPopup) {
 
     btn.addEventListener("click", () => {
       HabitStore.toggleSlot(date, slot);
-      refreshPopup(date); // refresh
-    });
+      const updatedSlots = HabitStore.getSlots(date);
 
+      const allButtons = slotOptionsContainer.querySelectorAll(".slot-btn");
+      allButtons.forEach((button) => (button.className = "slot-btn"));
+
+      updatedSlots.forEach((selectedSlot, index) => {
+        const targetBtn = Array.from(allButtons).find((b) =>
+          b.textContent.startsWith(`${selectedSlot}-`)
+        );
+        if (targetBtn) {
+          targetBtn.classList.add(`level-${Math.min(index + 1, 3)}`);
+        }
+      });
+    });
     slotOptionsContainer.appendChild(btn);
   });
 }

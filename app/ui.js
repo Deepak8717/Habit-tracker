@@ -71,12 +71,12 @@ function listenToSlotUpdates() {
 // === Core UI Logic ===
 function renderCalendar() {
   calendarContainer.innerHTML = "";
+  const fragment = document.createDocumentFragment();
   const months = Calendar.generateYearlyCalendar();
-
   months.forEach((month) => {
-    const monthElement = createMonthElement(month);
-    calendarContainer.appendChild(monthElement);
+    fragment.appendChild(createMonthElement(month));
   });
+  calendarContainer.appendChild(fragment);
 }
 
 function updateAllDays() {
