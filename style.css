@@ -5,6 +5,25 @@
   justify-content: center;
   gap: 10px; /* Space between months */
 }
+#score-popup {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  padding: 1rem 2rem;
+  border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1100; /* higher than your other popup */
+  font-family: Arial, sans-serif;
+  text-align: center;
+  user-select: none;
+}
+#score-value {
+  font-size: 34px;
+  font-weight: bold;
+  color: #4caf50; /* Green color for score */
+}
 h1 {
   text-align: center;
 }
@@ -154,4 +173,25 @@ h1 {
 .level-3 {
   background-color: #088908; /* Rich Green */
   color: white;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 40px;
+}
+
+th,
+td {
+  border: 1px solid #bbb;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+th {
+  background: #333;
+  color: #fff;
+}
+
+tbody tr:nth-child(even) {
+  background: #eee;
 }
