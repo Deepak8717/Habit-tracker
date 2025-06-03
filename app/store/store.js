@@ -59,7 +59,7 @@ class HabitStore {
    * Log the current habit data to the console (for debugging purposes)
    */
   logStore() {
-    // console.clear();
+    console.clear();
     console.log("Current Habit Data:", {
       slots: Object.fromEntries(this.habit.slots),
     });

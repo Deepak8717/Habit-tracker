@@ -14,23 +14,15 @@
     <main>
       <div id="calendar"></div>
     </main>
-    <div id="popup-overlay" class="overlay hidden"></div>
-    <div id="slot-popup" class="popup hidden">
+    <button id="open-popup-btn">Open Popup</button>
+    <div id="popup-overlay" class="popup-overlay hidden"></div>
+    <div id="main-popup" class="popup hidden">
       <div class="popup-content">
-        <button id="close-popup">X</button>
-        <h3>Select Time Slots</h3>
-        <div class="popup-header"></div>
-        <div class="slot-options">
-          <!-- Slots will be added dynamically using JS -->
-        </div>
+        <button id="popup-close-btn" class="popup-close">X</button>
+        <div id="popup-body">Default Text</div>
       </div>
     </div>
-    <div id="score-popup">
-      <div class="popup-content">
-        <h5>Your Score</h5>
-        <div id="score-value"></div>
-      </div>
-    </div>
+
     <!-- JavaScript will populate this -->
     <script type="module" src="./main.js"></script>
   </body>

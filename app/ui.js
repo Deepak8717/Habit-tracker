@@ -1,6 +1,6 @@
 // === Imports ===
 import Calendar from "./calendarData.js";
-import { showPopup } from "./popup/index.js";
+import SlotPopup from "./popupBase/popups/slotPopup.js";
 import HabitStore from "./store/store.js";
 
 // === DOM Reference ===
@@ -93,7 +93,7 @@ function setupEventListeners() {
     if (event.target.classList.contains("day-btn")) {
       const clickedDate = event.target.dataset.date;
       console.log("Opening slot popup for:", clickedDate);
-      showPopup(clickedDate);
+      SlotPopup.open(clickedDate);
 
       setTimeout(() => {
         const dayElement = document.querySelector(
