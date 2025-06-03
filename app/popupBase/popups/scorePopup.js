@@ -10,7 +10,7 @@ function generateScoreHTML() {
   return `
      <h3>Your Total Score</h3>
     <div class="score">${score}</div>
-    <a href="/scoreTable.html" class="score-link">View Full Score Table</a>
+    <a href="scoreTable.html" class="score-link">View Full Score Table</a>
   `;
 }
 export default class ScorePopup {
