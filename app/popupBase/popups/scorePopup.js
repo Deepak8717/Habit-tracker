@@ -6,7 +6,7 @@ import {
 
 function generateScoreHTML() {
   const recordedDays = loadRecordedDates();
-  const score = calculateCumulativeScore(recordedDays).toFixed(2);
+  const score = Math.floor(calculateCumulativeScore(recordedDays));
   return `
      <h3>Your Total Score</h3>
     <div class="score">${score}</div>
