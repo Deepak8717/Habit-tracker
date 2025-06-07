@@ -1,82 +1,94 @@
 import {
-  parseDate,
-  formatDate,
   loadRecordedDates,
-  calculateDailyPoints,
-  addDays,
-  calculatePenaltyPoints,
+  generateHistory,
+  formatDateShort,
+  formatDateISO,
 } from "./app/store/progressiveStore.js";
+
 function createBlankRow() {
   const blankRow = document.createElement("tr");
   blankRow.style.height = "15px";
-  blankRow.innerHTML = `<td colspan="3" style="background:#f4f4f4;"></td>`;
+  blankRow.innerHTML = `<td colspan="6" style="background:#f4f4f4;"></td>`;
   return blankRow;
 }
 
-function createDataRow(dayStr, points = "", score = "") {
+function createDataRow(
+  dayNumber,
+  dayStr,
+  points = "",
+  penaltyPoints = "",
+  bonus = "",
+  score = ""
+) {
   const tr = document.createElement("tr");
 
   const tdDay = document.createElement("td");
-  tdDay.textContent = dayStr;
+  tdDay.textContent = dayNumber;
+
+  const tdDate = document.createElement("td");
+  tdDate.textContent = dayStr;
 
   const tdPoints = document.createElement("td");
-  tdPoints.textContent = points;
+  tdPoints.textContent = points >= 0 ? points : `${points} (penalty)`;
+
+  const tdPenalty = document.createElement("td");
+  if (penaltyPoints > 0) {
+    tdPenalty.textContent = `-${penaltyPoints}`;
+    tdPenalty.classList.add("penalty");
+  } else {
+    tdPenalty.textContent = "";
+  }
+
+  const tdBonus = document.createElement("td");
+  if (bonus > 0) {
+    tdBonus.textContent = `+${bonus}`;
+    tdBonus.classList.add("bonus");
+  } else {
+    tdBonus.textContent = "";
+  }
 
   const tdScore = document.createElement("td");
   tdScore.textContent = score;
 
   tr.appendChild(tdDay);
+  tr.appendChild(tdDate);
   tr.appendChild(tdPoints);
+  tr.appendChild(tdPenalty);
+  tr.appendChild(tdBonus);
   tr.appendChild(tdScore);
 
   return tr;
 }
 
-export function renderHistoryTable(recordedDays) {
+function renderHistoryTable(recordedDays) {
   const tbody = document.querySelector("#scoreTable tbody");
   tbody.innerHTML = "";
   if (recordedDays.length === 0) return;
+  const cutoffDate = new Date();
+  cutoffDate.setHours(0, 0, 0, 0);
+  const filteredDays = recordedDays.filter(
+    (d) => new Date(d + "T00:00:00") < cutoffDate
+  );
 
-  const recordedSet = new Set(recordedDays);
-  const startDate = parseDate(recordedDays[0]);
-  const endDate = parseDate(recordedDays[recordedDays.length - 1]);
-
-  let currentDate = new Date(startDate);
-  let lastMonth = currentDate.getMonth();
-
-  let soberDayCount = 0;
-  let cumulativeScore = 0;
-
-  while (currentDate <= endDate) {
-    const dayStr = formatDate(currentDate);
-    const currentMonth = currentDate.getMonth();
-
-    if (currentMonth !== lastMonth) {
-      tbody.appendChild(createBlankRow());
-      lastMonth = currentMonth;
-    }
-
-    let points = "";
-    let score = "";
-
-    if (recordedSet.has(dayStr)) {
-      soberDayCount += 1;
-      points = calculateDailyPoints(soberDayCount);
-      cumulativeScore += points;
-    } else {
-      const penaltyPoints = calculatePenaltyPoints(cumulativeScore);
-      cumulativeScore -= penaltyPoints;
-      points = (-penaltyPoints).toFixed(2);
-    }
-
-    score = cumulativeScore.toFixed(3);
-    tbody.appendChild(createDataRow(dayStr, points, score));
-    currentDate = addDays(currentDate, 1);
+  const history = generateHistory(recordedDays);
+  let dayCounter = 1;
+  for (const entry of history) {
+    tbody.appendChild(
+      createDataRow(
+        dayCounter++,
+        formatDateShort(new Date(entry.day)),
+        entry.dailyPoints,
+        entry.penaltyPoints,
+        entry.bonusPoints,
+        entry.cumulativeScore
+      )
+    );
   }
 }
 
 function main() {
-  const recordedDays = loadRecordedDates();
+  const today = formatDateISO(new Date());
+  const recordedDays = loadRecordedDates(true).filter((d) => d !== today);
   renderHistoryTable(recordedDays);
 }
 
