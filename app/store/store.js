@@ -16,7 +16,10 @@ class HabitStore {
     const updatedSlots = this.updateSlots(slots, slot);
 
     if (updatedSlots.length) {
-      this.habit.slots.set(date, updatedSlots);
+      this.habit.slots.set(date, {
+        slots: updatedSlots,
+        timestamp: Date.now(),
+      });
     } else {
       this.habit.slots.delete(date);
     }
@@ -31,7 +34,8 @@ class HabitStore {
    * @returns {Array<number>}
    */
   getSlots(date) {
-    return this.habit.slots.get(date) || [];
+    const entry = this.habit.slots.get(date);
+    return Array.isArray(entry) ? entry : entry?.slots || [];
   }
 
   /**
