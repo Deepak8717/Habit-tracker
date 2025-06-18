@@ -21,6 +21,13 @@ function getReadableDocId(userId) {
 }
 
 export async function backupToFirebase() {
+  const last = parseInt(localStorage.getItem("firebaseBackupTime") || 0);
+  const THREE_DAYS = 1000 * 60 * 60 * 24 * 3;
+
+  if (Date.now() - last < THREE_DAYS) {
+    console.log("Skipping Firebase backup: last backup was recent.");
+    return;
+  }
   const raw = localStorage.getItem("habitData");
   if (!raw) {
     console.warn("No habitData found in localStorage.");
