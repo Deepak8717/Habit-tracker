@@ -5,7 +5,6 @@ export function parseDate(str) {
 }
 
 export function formatDateISO(date) {
-  console.log("formatDateISO", date);
   // returns YYYY-MM-DD string
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
