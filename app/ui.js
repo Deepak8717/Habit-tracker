@@ -1,6 +1,6 @@
 // === Imports ===
 import Calendar from "./calendarData.js";
-import SlotPopup from "./popupBase/popups/slotPopup.js";
+import SlotPopup from "./ui/popups/slotPopup.js";
 import HabitStore from "./store/store.js";
 
 // === DOM Reference ===
