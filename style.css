@@ -67,7 +67,25 @@ h1 {
   cursor: pointer;
   color: #333;
 }
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
+.logo {
+  height: 132px;
+}
+@media screen and (max-width: 768px) {
+  .logo {
+    height: 60px; /* Adjust logo size for smaller screens */
+  }
+
+  .brand {
+    justify-content: flex-start;
+    gap: 15px;
+  }
+}
 #close-popup:hover {
   color: #ff0000; /* Optional: Turns red when hovered */
 }
@@ -99,8 +117,8 @@ h1 {
 }
 .hamburger-btn {
   position: fixed;
-  top: 10px;
-  left: 10px;
+  top: 30px;
+  right: 1%;
   font-size: 24px;
   background: none;
   border: none;
