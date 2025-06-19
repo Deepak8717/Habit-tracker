@@ -88,7 +88,7 @@ function renderHistoryTable(recordedDays) {
 
 function main() {
   const today = formatDateISO(new Date());
-  const recordedDays = loadRecordedDates(true).filter((d) => d !== today);
+  const recordedDays = loadRecordedDates(false);
   renderHistoryTable(recordedDays);
 }
 
