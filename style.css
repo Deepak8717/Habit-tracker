@@ -97,6 +97,18 @@ h1 {
   color: white;
   font-weight: bold;
 }
+.hamburger-btn {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  z-index: 1001;
+}
+
 .popup-overlay {
   position: fixed;
   top: 0;
@@ -126,7 +138,32 @@ h1 {
 .popup-content {
   text-align: center;
 }
+input[type="file"] {
+  display: none;
+}
 
+/* Custom file input button */
+.upload-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.upload-label {
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+/* File name display */
+#file-name {
+  font-size: 0.9rem;
+  color: #444;
+}
 .slot-options {
   display: grid;
   grid-template-columns: repeat(4, 1fr); /* 4 columns */
