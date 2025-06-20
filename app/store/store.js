@@ -46,6 +46,12 @@ class HabitStore {
   getDayLevel(date) {
     return Math.min(this.getSlots(date).length, 3);
   }
+  getTrackingStartDate() {
+    if (this.habit.slots.size === 0) return null;
+
+    const sortedDates = Array.from(this.habit.slots.keys()).sort();
+    return new Date(sortedDates[0]);
+  }
 
   /**
    * Save the habit data to localStorage

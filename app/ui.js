@@ -54,11 +54,24 @@ function createMonthElement(month) {
 
 function updateDayColor(dayElement, date) {
   const slotCount = HabitStore.getDayLevel(date);
-  dayElement.classList.remove("level-1", "level-2", "level-3");
+  const dayDate = new Date(date);
+  const TRACKING_START = HabitStore.getTrackingStartDate();
+  const TODAY = new Date();
+  dayDate.setHours(0, 0, 0, 0);
+  TODAY.setHours(0, 0, 0, 0);
+  TRACKING_START?.setHours(0, 0, 0, 0);
+  if (!TRACKING_START || dayDate < TRACKING_START || dayDate > TODAY) return;
+  dayElement.classList.remove("level-1", "level-2", "level-3", "fail-day");
 
-  if (slotCount === 1) dayElement.classList.add("level-1");
-  else if (slotCount === 2) dayElement.classList.add("level-2");
-  else if (slotCount >= 3) dayElement.classList.add("level-3");
+  if (slotCount === 0) {
+    dayElement.classList.add("fail-day");
+  } else if (slotCount === 1) {
+    dayElement.classList.add("level-1");
+  } else if (slotCount === 2) {
+    dayElement.classList.add("level-2");
+  } else if (slotCount >= 3) {
+    dayElement.classList.add("level-3");
+  }
 }
 function listenToSlotUpdates() {
   document.addEventListener("habitSlotChange", (event) => {

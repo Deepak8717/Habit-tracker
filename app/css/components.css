@@ -30,8 +30,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #e7e3e3;
-  color: #d3d3d3;
+  color: #1a1a1a;
+  border: 1px solid #e5e2e2;
 }
 
 .day-btn.selected {
@@ -152,8 +152,24 @@ input[type="file"] {
 .level-2,
 .level-3 {
   background-color: #088908;
-  color: #53db72;
+  color: #edf1ee;
 }
+.fail-day {
+  background: repeating-linear-gradient(
+      128deg,
+      rgb(221 197 197 / 0%),
+      /* rgb(183 152 152 / 30%) 4px, */ rgb(189 173 173 / 0%) 4px,
+      rgb(131 99 99 / 50%) 8px
+    ),
+    repeating-linear-gradient(
+      214deg,
+      rgb(255 255 255),
+      /* rgb(183 152 152 / 30%) 4px, */ rgb(189 173 173 / 60%) 4px,
+      rgb(131 99 99 / 50%) 8px
+    );
+  color: #353535;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

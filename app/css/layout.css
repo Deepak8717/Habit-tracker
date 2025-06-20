@@ -16,19 +16,3 @@
     height: 60px;
   }
 }
-/* .month-container {
-  width: 100%;
-  max-width: 300px;
-  height: 250px;
-  padding: var(--space-sm);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-radius: 5px;
-}
-
-@media screen and (max-width: 768px) {
-  .month-container {
-    height: auto;
-  }
-} */
