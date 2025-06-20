@@ -1,8 +1,8 @@
-#calendar {
+/* #calendar {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-}
+} */
 .brand {
   display: flex;
   justify-content: center;
