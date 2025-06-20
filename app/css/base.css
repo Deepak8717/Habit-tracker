@@ -1,0 +1,30 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+h1 {
+  text-align: center;
+}
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+button:focus,
+.day-btn:focus {
+  outline: none;
+}
+.hidden {
+  display: none !important;
+}

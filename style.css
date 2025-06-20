@@ -1,26 +1,24 @@
-/* Calendar container */
-#calendar {
+/* #calendar {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 10px; /* Space between months */
+  gap: 10px;
 }
 
 h1 {
   text-align: center;
 }
-/* Month container (Fixed Square Box) */
+
 .month-container {
-  width: 300px; /* Fixed width */
-  height: 250px; /* Fixed height */
+  width: 300px;
+  height: 250px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   padding: 10px;
   border-radius: 5px;
-}
+}  
 
-/* Month header */
 .month-header {
   text-align: center;
   font-size: 18px;
@@ -28,7 +26,7 @@ h1 {
   margin-bottom: 5px;
 }
 
-/* Weekday row */
+
 .weekdays-row {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -37,12 +35,12 @@ h1 {
   font-size: 12px;
 }
 
-/* Weekday labels */
+
 .weekday {
   padding: 3px;
 }
 
-/* Days grid */
+
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -53,10 +51,10 @@ h1 {
 }
 
 /* Empty slots before first day */
-.empty-slot {
+/* .empty-slot {
   visibility: hidden;
-}
-#close-popup {
+} */
+/* #close-popup {
   position: absolute;
   top: 10px;
   right: 15px;
@@ -66,32 +64,31 @@ h1 {
   font-weight: bold;
   cursor: pointer;
   color: #333;
-}
-.brand {
+} */
+/* .brand {
   display: flex;
   justify-content: center;
   align-items: center;
-}
+} */
 
-.logo {
+/* .logo {
   height: 132px;
-}
-@media screen and (max-width: 768px) {
+} */
+/* @media screen and (max-width: 768px) {
   .logo {
-    height: 60px; /* Adjust logo size for smaller screens */
+    height: 60px; /
   }
 
   .brand {
     justify-content: flex-start;
     gap: 15px;
-  }
-}
-#close-popup:hover {
-  color: #ff0000; /* Optional: Turns red when hovered */
-}
+  } 
+} */
+/* #close-popup:hover {
+  color: #ff0000;
+} */
 
-/* Date button */
-.day-btn {
+/* .day-btn {
   width: 32px;
   height: 32px;
   border: none;
@@ -103,19 +100,19 @@ h1 {
   justify-content: center;
   align-items: center;
   background: #ebebeb;
-}
+} */
 
-.day-btn:hover {
+/* .day-btn:hover {
   opacity: 0.5;
-}
+} */
 
 /* Selected date */
-.day-btn.selected {
+/* .day-btn.selected {
   background-color: #4caf50;
   color: white;
   font-weight: bold;
-}
-.hamburger-btn {
+} */
+/* .hamburger-btn {
   position: fixed;
   top: 30px;
   right: 1%;
@@ -125,18 +122,18 @@ h1 {
   color: #333;
   cursor: pointer;
   z-index: 1001;
-}
+} */
 
-.popup-overlay {
+/* .popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+  background: rgba(0, 0, 0, 0.6);
   z-index: 9;
-}
-.popup {
+} */
+/* .popup {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -147,27 +144,22 @@ h1 {
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
-}
+} */
 
-.hidden {
-  display: none;
-}
-
-.popup-content {
+/* .popup-content {
   text-align: center;
-}
-input[type="file"] {
+} */
+/* input[type="file"] {
   display: none;
-}
+} */
 
-/* Custom file input button */
-.upload-wrapper {
+/* .upload-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 
-.upload-label {
+/* .upload-label {
   background-color: #4caf50;
   color: white;
   padding: 8px 16px;
@@ -175,61 +167,59 @@ input[type="file"] {
   border-radius: 4px;
   margin-bottom: 8px;
   text-align: center;
-}
+} */
 
-/* File name display */
-#file-name {
+/* #file-name {
   font-size: 0.9rem;
   color: #444;
-}
-.slot-options {
+} */
+/* .slot-options {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  grid-template-columns: repeat(4, 1fr); 
   gap: 10px;
   margin: 10px 0;
-}
-.score {
+} */
+/* .score {
   font-size: 2.5rem;
   font-weight: bold;
   color: #4caf50;
   margin: 10px 0;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-}
-.score-link {
+} */
+/* .score-link {
   font-size: 1rem;
   color: #007bff;
   text-decoration: underline;
   display: inline-block;
   margin-top: 10px;
-}
-.slot-btn {
+} */
+/* .slot-btn {
   padding: 8px;
   border: none;
   background: #f0f0f0;
   cursor: pointer;
   width: 52px;
   height: 42px;
-}
-.slot-btn.active {
-  background-color: #4caf50; /* Green */
+} */
+/* .slot-btn.active {
+  background-color: #4caf50;
   color: white;
   font-weight: bold;
-}
-.level-1 {
-  background-color: #b4ec18; /* Bright Lime */
+} */
+
+/* .level-1 {
+  background-color: #b4ec18;
 }
 
 .level-2 {
-  background-color: #4bdd4b; /* Fresh Green */
+  background-color: #4bdd4b;
 }
-
 .level-3 {
-  background-color: #088908; /* Rich Green */
-  color: white;
-}
+  background-color: #088908;
+  color: #53db72;
+} */
 
-/* progressive point table */
-table {
+/* table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 40px;
@@ -249,4 +239,4 @@ th {
 
 tbody tr:nth-child(even) {
   background: #eee;
-}
+} */

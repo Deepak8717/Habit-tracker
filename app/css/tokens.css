@@ -1,0 +1,22 @@
+:root {
+  /* Colors */
+  --color-primary: #4caf50;
+  --color-primary-dark: #088908;
+  --color-secondary: #007bff;
+  --color-muted: #eee;
+  --color-text: #333;
+  --color-bg: #fff;
+
+  /* Spacing scale */
+  --space-xs: 2px;
+  --space-sm: 4px;
+  --space-md: 8px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+
+  /* Sizes */
+  --logo-size: 132px;
+  --font-small: 12px;
+  --font-base: 14px;
+  --font-large: 18px;
+}
