@@ -9,16 +9,17 @@
   align-items: start;
 }
 
-.month-group {
-  display: flex;
-  flex-direction: column;
-}
-
 .days-grid {
   display: grid;
-  grid-auto-flow: row;
   grid-template-columns: repeat(7, 1fr);
   gap: 1px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
+  padding: 1rem;
 }
 
 .day-btn {
@@ -30,11 +31,12 @@
   font-size: 14px;
   text-align: center;
   color: #9b9b9b;
-  background: #ededed;
   box-sizing: border-box;
   line-height: 1;
   cursor: pointer;
   transition: opacity 0.2s;
+  border-radius: 5px;
+  margin: 2px;
 }
 
 .day-btn:hover {
@@ -54,16 +56,104 @@
   border: none;
 }
 
-.level-1,
-.level-2,
-.level-3 {
-  background-color: #088908;
-  color: #edf1ee;
+.score-1 {
+  background: #9acd32;
+  color: #000;
+}
+.score-2 {
+  background: #32cd32;
+  color: #000;
+}
+
+.score-3 {
+  background-color: #0a8d0a;
+  background-image: radial-gradient(circle, #0000004a 10%, #00640014 11%);
+  background-size: 16px 10px;
+  color: #f7f7f7e0;
   font-weight: bold;
+}
+.score-4 {
+  background-color: #006400;
+  background-image: linear-gradient(
+    135deg,
+    #007a00 0%,
+    #007a00 5%,
+    transparent 5%,
+    transparent 10%,
+    #005000 10%,
+    #005000 15%,
+    transparent 15%,
+    transparent 20%,
+    #007a00 20%,
+    #007a00 25%,
+    transparent 25%,
+    transparent 30%,
+    #005000 30%,
+    #005000 35%,
+    transparent 35%,
+    transparent 40%,
+    #007a00 40%,
+    #007a00 45%,
+    transparent 45%,
+    transparent 50%,
+    #005000 50%,
+    #005000 55%,
+    transparent 55%,
+    transparent 60%,
+    #007a00 60%,
+    #007a00 65%,
+    transparent 65%,
+    transparent 70%,
+    #005000 70%,
+    #005000 75%,
+    transparent 75%,
+    transparent 80%,
+    #007a00 80%,
+    #007a00 85%,
+    transparent 85%,
+    transparent 90%,
+    #005000 90%,
+    #005000 95%,
+    transparent 95%
+  );
+  background-size: 1em 1em;
+  color: #fff;
+}
+.score-5 {
+  background-color: #02632e;
+  background-image: linear-gradient(
+      575deg,
+      transparent 24%,
+      #000a05 25%,
+      #011409 30%,
+      transparent 31%,
+      #d5cccc00 39%,
+      #011208 40%,
+      #001a0b 45%,
+      transparent 46%
+    ),
+    linear-gradient(
+      324deg,
+      transparent -9%,
+      #011a0c 25%,
+      #0f3f23 30%,
+      #00000073 31%,
+      #08030300 39%,
+      #000000 40%,
+      #000e06 45%,
+      #f1ebeb26 46%
+    );
+  background-size: 1em 1em;
+  color: #fff;
+}
+.score-7 {
+  background-color: #1b5e20;
+  color: white;
 }
 
 .fail-day {
   position: relative;
+  border: 1px solid #6b3548;
 }
 
 .fail-day::after,
@@ -71,10 +161,10 @@
   content: "";
   position: absolute;
   width: 60%;
-  height: 2px;
-  background: rgb(189 92 92 / 70%);
-  top: 55%;
-  left: 8px;
+  height: 1.5px;
+  background: rgba(236, 182, 182, 0.7);
+  top: 50%;
+  left: 5px;
   transform-origin: center;
   pointer-events: none;
 }
@@ -93,17 +183,27 @@
     max-width: calc(3 * 140px);
   }
 }
+
 @media (max-width: 764px) {
   #calendar {
     grid-template-columns: repeat(2, auto);
     grid-template-rows: repeat(6, auto);
     max-width: calc(2 * 140px);
   }
+
+  .days-grid {
+    margin-bottom: 1rem;
+  }
 }
+
 @media (max-width: 600px) {
   #calendar {
     grid-template-columns: repeat(1, auto);
     grid-template-rows: repeat(12, auto);
     max-width: calc(1 * 140px);
+  }
+
+  .days-grid {
+    margin-bottom: 2rem;
   }
 }

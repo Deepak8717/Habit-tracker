@@ -8,8 +8,8 @@
 
 body {
   font-family: sans-serif;
-  background: var(--color-bg);
-  color: var(--color-text);
+  background: #0f1419;
+  color: #fff;
 }
 
 h1 {
@@ -19,6 +19,7 @@ button {
   cursor: pointer;
   border: none;
   background: none;
+  color: #fff;
 }
 
 button:focus,
@@ -27,4 +28,8 @@ button:focus,
 }
 .hidden {
   display: none !important;
+}
+a {
+  color: #fff;
+  text-decoration: none;
 }

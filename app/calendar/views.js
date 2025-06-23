@@ -1,8 +1,15 @@
 import CalendarData from "./data.js";
 import HabitStore from "../store/store.js";
 import SlotPopup from "../ui/popups/slotPopup.js";
+import {
+  loadRecordedDates,
+  generateHistory,
+} from "../store/progressiveStore.js";
 
 const calendarContainer = document.getElementById("calendar");
+
+let recordedDaysSet = new Set();
+let scoreByDate = {};
 
 function createDayButton(day) {
   const btn = document.createElement("button");
@@ -14,14 +21,13 @@ function createDayButton(day) {
 
 function createEmptySlots(n) {
   return Array.from({ length: n }, () => {
-    const empty = document.createElement("div");
-    empty.className = "day-btn empty";
-    return empty;
+    const div = document.createElement("div");
+    div.className = "day-btn empty";
+    return div;
   });
 }
 
 function updateDayColor(btn, date) {
-  const count = HabitStore.getDayLevel(date);
   const start = HabitStore.getTrackingStartDate();
   const today = new Date();
   const day = new Date(date);
@@ -29,35 +35,48 @@ function updateDayColor(btn, date) {
 
   if (!start || day < start || day > today) return;
 
-  btn.classList.remove("fail-day", "level-1", "level-2", "level-3");
-  btn.classList.add(count === 0 ? "fail-day" : `level-${Math.min(count, 3)}`);
-}
+  btn.classList.remove(
+    "fail-day",
+    ...Array.from({ length: 8 }, (_, i) => `score-${i}`)
+  );
 
-function renderMonthGroup(month) {
-  const group = document.createElement("div");
-  const grid = document.createElement("div");
-  grid.className = "days-grid";
+  if (!recordedDaysSet.has(date)) {
+    btn.classList.add("fail-day");
+    return;
+  }
 
-  const offset = new Date(month.days[0].date).getDay();
-  createEmptySlots(offset).forEach((el) => grid.appendChild(el));
-
-  month.days.forEach((day) => {
-    const btn = createDayButton(day);
-    updateDayColor(btn, day.date);
-    grid.appendChild(btn);
-  });
-
-  group.appendChild(grid);
-  return group;
+  const thresholds = [0, 50, 100, 200, 300, 400, 500];
+  const tier = thresholds.filter((t) => (scoreByDate[date] || 0) >= t).length;
+  btn.classList.add(`score-${tier}`);
 }
 
 function renderCalendarUI() {
-  const months = CalendarData.generateYearlyCalendar();
   calendarContainer.innerHTML = "";
+  const months = CalendarData.generateYearlyCalendar();
 
-  months.forEach((month) => {
-    calendarContainer.appendChild(renderMonthGroup(month));
-  });
+  for (const month of months) {
+    const grid = document.createElement("div");
+    grid.className = "days-grid";
+
+    const offset = new Date(month.days[0].date).getDay();
+    createEmptySlots(offset).forEach((el) => grid.appendChild(el));
+
+    for (const day of month.days) {
+      const btn = createDayButton(day);
+      updateDayColor(btn, day.date);
+      grid.appendChild(btn);
+    }
+
+    calendarContainer.appendChild(grid);
+  }
+}
+
+function refreshState() {
+  const recordedDates = loadRecordedDates(false);
+  recordedDaysSet = new Set(recordedDates);
+  scoreByDate = Object.fromEntries(
+    generateHistory(recordedDates).map((h) => [h.day, h.cumulativeScore])
+  );
 }
 
 function setupEventListeners() {
@@ -69,15 +88,17 @@ function setupEventListeners() {
   });
 
   document.addEventListener("habitSlotChange", (e) => {
+    refreshState();
     const btn = document.querySelector(`[data-date="${e.detail}"]`);
     if (btn) updateDayColor(btn, e.detail);
   });
 }
 
 function startCalendar() {
+  refreshState();
   renderCalendarUI();
   setupEventListeners();
-  window.addEventListener("resize", renderCalendarUI); // Simple re-render
+  window.addEventListener("resize", renderCalendarUI);
 }
 
 export default {
