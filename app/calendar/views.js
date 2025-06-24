@@ -10,6 +10,7 @@ const calendarContainer = document.getElementById("calendar");
 
 let recordedDaysSet = new Set();
 let scoreByDate = {};
+let currentScoreTier = null;
 
 function createDayButton(day) {
   const btn = document.createElement("button");
@@ -33,12 +34,13 @@ function updateDayColor(btn, date) {
   const day = new Date(date);
   [day, today, start].forEach((d) => d?.setHours(0, 0, 0, 0));
 
-  if (!start || day < start || day > today) return;
-
   btn.classList.remove(
     "fail-day",
-    ...Array.from({ length: 8 }, (_, i) => `score-${i}`)
+    ...Array.from({ length: 8 }, (_, i) => `score-${i}`),
+    "font-bold"
   );
+
+  if (!start || day < start || day > today) return;
 
   if (!recordedDaysSet.has(date)) {
     btn.classList.add("fail-day");
@@ -48,6 +50,10 @@ function updateDayColor(btn, date) {
   const thresholds = [0, 50, 100, 200, 300, 400, 500];
   const tier = thresholds.filter((t) => (scoreByDate[date] || 0) >= t).length;
   btn.classList.add(`score-${tier}`);
+
+  if (tier === currentScoreTier) {
+    btn.classList.add("font-bold");
+  }
 }
 
 function renderCalendarUI() {
@@ -77,6 +83,10 @@ function refreshState() {
   scoreByDate = Object.fromEntries(
     generateHistory(recordedDates).map((h) => [h.day, h.cumulativeScore])
   );
+  const allScores = Object.values(scoreByDate);
+  const maxScore = allScores.length ? Math.max(...allScores) : 0;
+  const thresholds = [0, 50, 100, 200, 300, 400, 500];
+  currentScoreTier = thresholds.filter((t) => maxScore >= t).length;
 }
 
 function setupEventListeners() {
@@ -88,9 +98,14 @@ function setupEventListeners() {
   });
 
   document.addEventListener("habitSlotChange", (e) => {
+    const prevTier = currentScoreTier;
     refreshState();
-    const btn = document.querySelector(`[data-date="${e.detail}"]`);
-    if (btn) updateDayColor(btn, e.detail);
+    if (currentScoreTier !== prevTier) {
+      renderCalendarUI();
+    } else {
+      const btn = document.querySelector(`[data-date="${e.detail}"]`);
+      if (btn) updateDayColor(btn, e.detail);
+    }
   });
 }
 
