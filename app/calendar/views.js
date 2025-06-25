@@ -1,11 +1,7 @@
 import CalendarData from "./data.js";
-import HabitStore from "../store/store.js";
 import SlotPopup from "../ui/popups/slotPopup.js";
-import {
-  loadRecordedDates,
-  generateHistory,
-} from "../store/progressiveStore.js";
-
+import { generateHistory } from "../store/progressiveStore.js";
+import { store } from "../store/storeInstance.js";
 const calendarContainer = document.getElementById("calendar");
 
 let recordedDaysSet = new Set();
@@ -29,10 +25,14 @@ function createEmptySlots(n) {
 }
 
 function updateDayColor(btn, date) {
-  const start = HabitStore.getTrackingStartDate();
-  const today = new Date();
+  const start = store.getTrackingStartDate();
+  const recordedDatesArray = Array.from(recordedDaysSet);
+  const lastRecordedDate = recordedDatesArray.length
+    ? new Date(recordedDatesArray[recordedDatesArray.length - 1])
+    : null;
+
   const day = new Date(date);
-  [day, today, start].forEach((d) => d?.setHours(0, 0, 0, 0));
+  [day, start, lastRecordedDate].forEach((d) => d?.setHours(0, 0, 0, 0));
 
   btn.classList.remove(
     "fail-day",
@@ -40,7 +40,8 @@ function updateDayColor(btn, date) {
     "font-bold"
   );
 
-  if (!start || day < start || day > today) return;
+  if (!start || !lastRecordedDate || day < start || day > lastRecordedDate)
+    return;
 
   if (!recordedDaysSet.has(date)) {
     btn.classList.add("fail-day");
@@ -78,13 +79,23 @@ function renderCalendarUI() {
 }
 
 function refreshState() {
-  const recordedDates = loadRecordedDates(false);
-  recordedDaysSet = new Set(recordedDates);
-  scoreByDate = Object.fromEntries(
-    generateHistory(recordedDates).map((h) => [h.day, h.cumulativeScore])
+  const currentHabit = localStorage.getItem("currentHabit") || "defaultHabit";
+  const allDates = Array.from(store.habit.slots.keys());
+
+  recordedDaysSet = new Set(
+    allDates.filter((date) => store.getSlots(date).length > 0)
   );
+
+  scoreByDate = Object.fromEntries(
+    generateHistory(Array.from(recordedDaysSet), currentHabit).map((h) => [
+      h.day,
+      h.cumulativeScore,
+    ])
+  );
+
   const allScores = Object.values(scoreByDate);
   const maxScore = allScores.length ? Math.max(...allScores) : 0;
+
   const thresholds = [0, 50, 100, 200, 300, 400, 500];
   currentScoreTier = thresholds.filter((t) => maxScore >= t).length;
 }

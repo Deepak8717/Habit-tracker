@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Advanced JSON HabitData Viewer</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #0f1419;
+        color: #fff;
+        padding: 2rem;
+      }
+      button {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1rem;
+        margin-right: 0.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      ul.tree,
+      ul.subtree {
+        list-style: none;
+        padding-left: 1rem;
+        margin-bottom: 1rem;
+      }
+      .key {
+        color: #84ffb5;
+        cursor: pointer;
+      }
+      .collapsed > .children {
+        display: none;
+      }
+      .range-button {
+        color: #9fe3ff;
+        cursor: pointer;
+        margin: 0.5rem 0;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>JSON HabitData Foldable Viewer</h2>
+    <div class="controls">
+      <button onclick="loadFromLocalStorage()">Reload habitData</button>
+      <button onclick="copyVisibleTree()">Copy Visible JSON</button>
+    </div>
+    <div id="tree"></div>
+
+    <script>
+      let jsonData = {};
+
+      function loadFromLocalStorage() {
+        const val = localStorage.getItem("habitData");
+        if (!val) {
+          alert("No 'habitData' found in localStorage");
+          return;
+        }
+        jsonData = JSON.parse(val);
+        document.getElementById("tree").innerHTML = "";
+        renderTopLevelFolded(jsonData, document.getElementById("tree"));
+      }
+
+      function groupKeys(keys, chunkSize) {
+        const result = [];
+        for (let i = 0; i < keys.length; i += chunkSize) {
+          result.push(keys.slice(i, i + chunkSize));
+        }
+        return result;
+      }
+
+      function renderTopLevelFolded(obj, container) {
+        const keys = Object.keys(obj);
+        const total = keys.length;
+        const head = keys.slice(0, 5);
+        const tail = keys.slice(-5);
+        const mid = keys.slice(5, -5);
+
+        const ul = document.createElement("ul");
+        ul.className = "tree";
+
+        head.forEach((k) => ul.appendChild(renderNode(k, obj[k])));
+
+        if (mid.length > 0) {
+          const midLi = document.createElement("li");
+          const btn = document.createElement("span");
+          btn.textContent = `... ${mid.length} middle days hidden ... [⯈ expand]`;
+          btn.className = "range-button";
+          btn.onclick = () => {
+            const grouped = groupKeys(mid, 10);
+            grouped.forEach((group) => {
+              const groupLi = document.createElement("li");
+              const range = `${group[0]} to ${group[group.length - 1]}`;
+              const groupBtn = document.createElement("span");
+              groupBtn.textContent = `[⯈] ${range}`;
+              groupBtn.className = "range-button";
+
+              const subUl = document.createElement("ul");
+              subUl.className = "subtree";
+              subUl.style.display = "none";
+
+              group.forEach((k) => subUl.appendChild(renderNode(k, obj[k])));
+
+              groupBtn.onclick = () => {
+                subUl.style.display =
+                  subUl.style.display === "none" ? "block" : "none";
+                groupBtn.textContent =
+                  subUl.style.display === "none"
+                    ? `[⯈] ${range}`
+                    : `[⯆] ${range}`;
+              };
+
+              groupLi.appendChild(groupBtn);
+              groupLi.appendChild(subUl);
+              ul.appendChild(groupLi);
+            });
+            midLi.remove();
+          };
+          midLi.appendChild(btn);
+          ul.appendChild(midLi);
+        }
+
+        tail.forEach((k) => ul.appendChild(renderNode(k, obj[k])));
+
+        container.appendChild(ul);
+      }
+
+      function renderNode(key, value) {
+        const li = document.createElement("li");
+        li.classList.add("collapsed");
+
+        const keySpan = document.createElement("span");
+        keySpan.className = "key";
+        keySpan.textContent = key;
+        keySpan.onclick = () => li.classList.toggle("collapsed");
+
+        li.appendChild(keySpan);
+
+        const childrenDiv = document.createElement("div");
+        childrenDiv.className = "children";
+
+        const innerUl = document.createElement("ul");
+        for (let subKey in value) {
+          const subLi = document.createElement("li");
+          const val = value[subKey];
+          if (Array.isArray(val)) {
+            subLi.textContent = `${subKey}: [${val.join(", ")}]`;
+          } else if (typeof val === "object") {
+            const subSub = JSON.stringify(val).replace(/\s+/g, "");
+            subLi.textContent = `${subKey}: ${subSub}`;
+          } else {
+            subLi.textContent = `${subKey}: ${val}`;
+          }
+          innerUl.appendChild(subLi);
+        }
+        childrenDiv.appendChild(innerUl);
+        li.appendChild(childrenDiv);
+        return li;
+      }
+
+      function copyVisibleTree() {
+        const treeRoot = document.querySelector("#tree > ul.tree");
+        if (!treeRoot) return;
+        const result = walk(treeRoot);
+        navigator.clipboard.writeText(result).then(() => {
+          alert("Copied visible JSON.");
+        });
+      }
+
+      function walk(ul) {
+        let output = "{";
+        const items = Array.from(ul.children);
+        const parts = [];
+
+        for (const li of items) {
+          const keyEl = li.querySelector(".key");
+          if (!keyEl) continue;
+          const key = keyEl.textContent;
+          const isCollapsed = li.classList.contains("collapsed");
+          const child = li.querySelector("div.children ul");
+
+          if (isCollapsed || !child) {
+            parts.push(`"${key}":{...}`);
+          } else {
+            const innerParts = [];
+            Array.from(child.children).forEach((subLi) => {
+              innerParts.push(subLi.textContent.trim());
+            });
+            parts.push(`"${key}":{${innerParts.join(",")}}`);
+          }
+        }
+
+        output += parts.join(",") + "}";
+        return output;
+      }
+    </script>
+  </body>
+</html>

@@ -54,23 +54,24 @@
   background: transparent;
   border: none;
 }
-.font-bold{
+.font-bold {
   font-weight: bold;
 }
+
 .score-1 {
-  background: #7fb800; /* Reduced brightness, warmer hue */
-  color: #1a1f24; /* Softer dark for better readability */
+  background: #7fb800;
+  color: #1a1f24;
 }
 .score-2 {
-  background: #28a428; /* Deeper, less electric green */
-  color: #0f1419; /* Match your main background */
+  background: #28a428;
+  color: #0f1419;
 }
 
 .score-3 {
-  background-color: #0a6b0a; /* Slightly desaturated */
+  background-color: #0a6b0a;
   background-image: radial-gradient(circle, #00000060 10%, #00640020 11%);
   background-size: 16px 10px;
-  color: #e8f4f8; /* Warmer white with blue undertone */
+  color: #e8f4f8;
 }
 .score-4 {
   background-color: #0ae17e63;
