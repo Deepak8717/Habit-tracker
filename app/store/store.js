@@ -1,129 +1,117 @@
-import Debug from "../debug.js";
+import { createCommitment, isValidCommitment } from "./registry.js";
+import { scoreCalculation } from "../core/scoring.js";
 
-class HabitStore {
-  constructor(habitName = "defaultHabit") {
-    this.habitName = habitName;
-    this.habit = { slots: new Map() };
-    this.loadFromLocalStorage();
+function normalizeDate(date) {
+  return new Date(date).toISOString().slice(0, 10);
+}
+
+export default class CommitmentStore {
+  constructor() {
+    this.registry = this._load("commitmentRegistry") || {};
+    this.log = this._load("commitmentLog") || {};
+    this.activeCommitmentId =
+      localStorage.getItem("currentCommitment") ||
+      Object.keys(this.registry)[0] ||
+      null;
   }
-  setActiveHabit(name) {
-    this.habitName = name;
+  getStartDate(commitmentId) {
+    const history = this.getHistory(commitmentId);
+    return history.length ? history[0].date : null;
   }
-  toggleSlot(date, slot) {
-    const entry = this.habit.slots.get(date);
-    const currentSlots = this.getSlots(date);
-    const updatedSlots = this.updateSlots(currentSlots, slot);
-    const newData = { slots: updatedSlots, timestamp: Date.now() };
 
-    if (updatedSlots.length === 0) {
-      if (!entry) return;
+  setActiveCommitment(id) {
+    if (this.registry[id]) {
+      this.activeCommitmentId = id;
+      localStorage.setItem("currentCommitment", id);
+    }
+  }
 
-      // new format
-      if (typeof entry === "object" && !Array.isArray(entry)) {
-        delete entry[this.habitName];
-        if (Object.keys(entry).length === 0) {
-          this.habit.slots.delete(date);
-        } else {
-          this.habit.slots.set(date, entry);
+  addCommitment(name, config = {}) {
+    const slug = name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+    const id = `commitment_${slug}_${Date.now()}`;
+    const entry = createCommitment({ name, config });
+    if (!isValidCommitment(entry)) throw new Error("Invalid commitment config");
+    this.registry[id] = entry;
+    this._save("commitmentRegistry", this.registry);
+    return id;
+  }
+
+  removeCommitment(id) {
+    delete this.registry[id];
+    for (const date in this.log) {
+      if (this.log[date][id]) {
+        delete this.log[date][id];
+        if (Object.keys(this.log[date]).length === 0) {
+          delete this.log[date];
         }
-      } else {
-        // old format fallback
-        this.habit.slots.delete(date);
       }
-    } else {
-      let newEntry;
-
-      if (entry && typeof entry === "object" && !Array.isArray(entry)) {
-        newEntry = { ...entry, [this.habitName]: newData };
-      } else {
-        // migrating old format
-        newEntry = { [this.habitName]: newData };
-      }
-
-      this.habit.slots.set(date, newEntry);
     }
-
-    this.saveToLocalStorage();
-    this.dispatchHabitChangeEvent(date);
+    this._save("commitmentRegistry", this.registry);
+    this._save("commitmentLog", this.log);
   }
 
-  getSlots(date) {
-    const entry = this.habit.slots.get(date);
-    if (!entry) return [];
+  toggleSlot(commitmentId, date, slot) {
+    if (slot == null) return;
+    const normDate = normalizeDate(date);
+    if (!this.log[normDate]) this.log[normDate] = {};
 
-    // old format
-    if (Array.isArray(entry.slots)) return entry.slots;
+    const current = this.log[normDate][commitmentId];
+    const slotSet = new Set(current?.slots || []);
+    const beforeSize = slotSet.size;
 
-    // new format
-    return entry[this.habitName]?.slots || [];
+    slotSet.has(slot) ? slotSet.delete(slot) : slotSet.add(slot);
+    const afterSize = slotSet.size;
+
+    this.log[normDate][commitmentId] = {
+      slots: [...slotSet],
+      timestamp:
+        afterSize !== beforeSize
+          ? Date.now()
+          : current?.timestamp || Date.now(),
+    };
+
+    this._save("commitmentLog", this.log);
   }
 
-  getTrackingStartDate() {
-    if (this.habit.slots.size === 0) return null;
-
-    const sortedDates = Array.from(this.habit.slots.keys()).sort();
-    return new Date(sortedDates[0]);
+  getSlots(commitmentId, date) {
+    const normDate = normalizeDate(date);
+    return this.log[normDate]?.[commitmentId]?.slots || [];
   }
-  saveToLocalStorage() {
+
+  getHistory(commitmentId) {
+    return Object.entries(this.log)
+      .filter(([_, entries]) => entries[commitmentId])
+      .map(([date, entries]) => ({
+        date,
+        slots: entries[commitmentId].slots,
+        timestamp: entries[commitmentId].timestamp,
+      }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  getScore(commitmentId) {
+    const days = this.getHistory(commitmentId).map((entry) => entry.date);
+    return days.length ? scoreCalculation(days) : 0;
+  }
+
+  _save(key, data) {
     try {
-      const plainObject = Object.fromEntries(this.habit.slots);
-      localStorage.setItem("habitData", JSON.stringify(plainObject));
+      localStorage.setItem(key, JSON.stringify(data));
     } catch (e) {
-      console.error("Failed to save habit data to localStorage", e);
+      console.error(`Failed to save ${key}:`, e);
     }
   }
 
-  logStore() {
-    console.clear();
-    console.log("Current Habit Data:", {
-      slots: Object.fromEntries(this.habit.slots),
-    });
-  }
-  loadFromLocalStorage() {
-    const savedData = localStorage.getItem("habitData");
-
-    if (savedData) {
-      try {
-        const parsedData = JSON.parse(savedData);
-        this.habit.slots = new Map(Object.entries(parsedData));
-      } catch (e) {
-        console.error("Error parsing habit data from localStorage", e);
-        this.habit.slots = new Map();
-      }
-    }
-  }
-
-  updateSlots(slots, slot) {
-    return slots.includes(slot)
-      ? slots.filter((s) => s !== slot)
-      : [...slots, slot].sort((a, b) => a - b);
-  }
-
-  dispatchHabitChangeEvent(date) {
-    const event = new CustomEvent("habitSlotChange", { detail: date });
-    document.dispatchEvent(event);
-  }
-
-  resetStore() {
-    this.habit = { slots: new Map() };
-    this.saveToLocalStorage();
-    this.dispatchHabitChangeEvent(null);
-  }
-
-  clearLocalStorage() {
-    localStorage.removeItem("habitData");
-  }
-
-  isValidStoredData() {
-    const savedData = localStorage.getItem("habitData");
+  _load(key) {
     try {
-      const parsedData = savedData ? JSON.parse(savedData) : null;
-      return parsedData && typeof parsedData === "object";
+      const data = localStorage.getItem(key);
+      return data ? JSON.parse(data) : null;
     } catch (e) {
-      console.error("Invalid habit data found in localStorage", e);
-      return false;
+      console.error(`Failed to load ${key}:`, e);
+      return null;
     }
   }
 }
-
-export default HabitStore;

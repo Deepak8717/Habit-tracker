@@ -1,12 +1,19 @@
 import CalendarData from "./data.js";
 import SlotPopup from "../ui/popups/slotPopup.js";
-import { generateHistory } from "../store/progressiveStore.js";
-import { store } from "../store/storeInstance.js";
+import { generateHistory } from "../core/scoring.js";
+import { store } from "../store/index.js";
+
 const calendarContainer = document.getElementById("calendar");
 
 let recordedDaysSet = new Set();
 let scoreByDate = {};
-let currentScoreTier = null;
+let commitmentStartDate = null;
+
+function normalize(date) {
+  const d = new Date(date);
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); // Shift to local time
+  return d.toISOString().slice(0, 10);
+}
 
 function createDayButton(day) {
   const btn = document.createElement("button");
@@ -24,41 +31,33 @@ function createEmptySlots(n) {
   });
 }
 
-function updateDayColor(btn, date) {
-  const start = store.getTrackingStartDate();
-  const recordedDatesArray = Array.from(recordedDaysSet);
-  const lastRecordedDate = recordedDatesArray.length
-    ? new Date(recordedDatesArray[recordedDatesArray.length - 1])
-    : null;
+function updateDayButton(btn, date) {
+  const today = normalize(new Date());
+  const isFuture = date > today;
+  const isBeforeStart =
+    commitmentStartDate && date < normalize(commitmentStartDate);
 
-  const day = new Date(date);
-  [day, start, lastRecordedDate].forEach((d) => d?.setHours(0, 0, 0, 0));
-
-  btn.classList.remove(
-    "fail-day",
-    ...Array.from({ length: 8 }, (_, i) => `score-${i}`),
-    "font-bold"
-  );
-
-  if (!start || !lastRecordedDate || day < start || day > lastRecordedDate)
-    return;
+  if (isFuture || isBeforeStart) return;
 
   if (!recordedDaysSet.has(date)) {
     btn.classList.add("fail-day");
     return;
   }
-
-  const thresholds = [0, 50, 100, 200, 300, 400, 500];
-  const tier = thresholds.filter((t) => (scoreByDate[date] || 0) >= t).length;
-  btn.classList.add(`score-${tier}`);
-
-  if (tier === currentScoreTier) {
-    btn.classList.add("font-bold");
-  }
+  const score = scoreByDate[date] || 0;
+  const threshold = score === 0 ? 0 : Math.floor((score - 1) / 50) + 1;
+  const capped = Math.min(threshold, 8);
+  btn.classList.add(`score-${capped}`);
 }
 
-function renderCalendarUI() {
+function refreshDayButton(date) {
+  const btn = document.querySelector(`[data-date="${date}"]`);
+  if (btn) updateDayButton(btn, date);
+}
+
+export function renderCalendarUI() {
+  refreshState();
   calendarContainer.innerHTML = "";
+
   const months = CalendarData.generateYearlyCalendar();
 
   for (const month of months) {
@@ -70,7 +69,7 @@ function renderCalendarUI() {
 
     for (const day of month.days) {
       const btn = createDayButton(day);
-      updateDayColor(btn, day.date);
+      updateDayButton(btn, day.date);
       grid.appendChild(btn);
     }
 
@@ -78,50 +77,57 @@ function renderCalendarUI() {
   }
 }
 
-function refreshState() {
-  const currentHabit = localStorage.getItem("currentHabit") || "defaultHabit";
-  const allDates = Array.from(store.habit.slots.keys());
+export function refreshState() {
+  const commitmentId = store.activeCommitmentId;
+  if (!commitmentId) return;
 
-  recordedDaysSet = new Set(
-    allDates.filter((date) => store.getSlots(date).length > 0)
+  // Get all dates in the calendar year (or desired range)
+  const calendarDates = CalendarData.generateYearlyCalendar().flatMap((month) =>
+    month.days.map((day) => day.date)
   );
 
-  scoreByDate = Object.fromEntries(
-    generateHistory(Array.from(recordedDaysSet), currentHabit).map((h) => [
-      h.day,
-      h.cumulativeScore,
-    ])
-  );
+  // Get all dates with slots, sorted
+  const allDates = Object.keys(store.log)
+    .filter((date) => store.getSlots(commitmentId, date).length > 0)
+    .sort();
 
-  const allScores = Object.values(scoreByDate);
-  const maxScore = allScores.length ? Math.max(...allScores) : 0;
+  recordedDaysSet = new Set(allDates);
 
-  const thresholds = [0, 50, 100, 200, 300, 400, 500];
-  currentScoreTier = thresholds.filter((t) => maxScore >= t).length;
+  // Build cumulative score history for all days with slots
+  const history = generateHistory(allDates);
+
+  // Map date -> cumulativeScore for all calendar dates, filling forward
+  scoreByDate = {};
+  let lastScore = 0;
+  let historyIdx = 0;
+  for (const date of calendarDates) {
+    if (historyIdx < history.length && history[historyIdx].day === date) {
+      lastScore = history[historyIdx].cumulativeScore;
+      historyIdx++;
+    }
+    scoreByDate[date] = lastScore;
+  }
+
+  commitmentStartDate = store.getStartDate(commitmentId);
 }
 
 function setupEventListeners() {
   calendarContainer.addEventListener("click", (e) => {
     if (!e.target.classList.contains("day-btn")) return;
     const date = e.target.dataset.date;
-    SlotPopup.open(date);
-    updateDayColor(e.target, date);
+    SlotPopup.open(date).then(() => {
+      refreshState();
+      renderCalendarUI();
+    });
   });
 
   document.addEventListener("habitSlotChange", (e) => {
-    const prevTier = currentScoreTier;
     refreshState();
-    if (currentScoreTier !== prevTier) {
-      renderCalendarUI();
-    } else {
-      const btn = document.querySelector(`[data-date="${e.detail}"]`);
-      if (btn) updateDayColor(btn, e.detail);
-    }
+    renderCalendarUI();
   });
 }
 
 function startCalendar() {
-  refreshState();
   renderCalendarUI();
   setupEventListeners();
   window.addEventListener("resize", renderCalendarUI);

@@ -1,9 +1,19 @@
-import {
-  loadRecordedDates,
-  generateHistory,
-  formatDateShort,
-  formatDateISO,
-} from "./app/store/progressiveStore.js";
+import { store } from "./app/store/store.js";
+import { generateHistory } from "./app/engine/scoringEngine.js";
+
+function formatDateShort(date) {
+  const d = String(date.getDate()).padStart(2, "0");
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const y = String(date.getFullYear()).slice(-2);
+  return `${d}/${m}/${y}`;
+}
+
+function formatDateISO(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
 
 function createBlankRow() {
   const blankRow = document.createElement("tr");
@@ -64,11 +74,6 @@ function renderHistoryTable(recordedDays) {
   const tbody = document.querySelector("#scoreTable tbody");
   tbody.innerHTML = "";
   if (recordedDays.length === 0) return;
-  const cutoffDate = new Date();
-  cutoffDate.setHours(0, 0, 0, 0);
-  const filteredDays = recordedDays.filter(
-    (d) => new Date(d + "T00:00:00") < cutoffDate
-  );
 
   const history = generateHistory(recordedDays);
   let dayCounter = 1;
@@ -87,8 +92,12 @@ function renderHistoryTable(recordedDays) {
 }
 
 function main() {
-  const today = formatDateISO(new Date());
-  const recordedDays = loadRecordedDates(false);
+  const commitmentId = store.activeCommitmentId;
+  if (!commitmentId) return;
+
+  const recordedDays = Object.keys(store.log).filter(
+    (date) => store.getSlots(commitmentId, date).length > 0
+  );
   renderHistoryTable(recordedDays);
 }
 

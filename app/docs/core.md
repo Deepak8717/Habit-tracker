@@ -36,8 +36,8 @@ Leverage applies controlled pressure to move systems. That includes you. One slo
 
 ## System Layout
 
-- `/store`: slot data, score engine, persistence
-- `/ui/popups`: interfaces for adjusting pressure
-- `/calendar`: visual map of leverage applied
+- `/store`: slot data, commitment registry, score engine
+- `/ui/popups`: interfaces for applying effort
+- `/calendar`: visual map of force applied over time
 - `/firebase.js`: isolated optional sync layer
-- `/main.js`: setup, init, glue
+- `/main.js`: system boot and orchestration

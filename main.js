@@ -3,23 +3,22 @@ import PopupManager from "./app/ui/popups/basePopup.js";
 import ScorePopup from "./app/ui/popups/scorePopup.js";
 import { backupToFirebase } from "./app/backup/backup.js";
 import HamburgerMenu from "./app/ui/popups/hamburgerMenu.js";
-import { store } from "./app/store/storeInstance.js";
-
-// Set or get the current habit
-const currentHabit = localStorage.getItem("currentHabit") || "defaultHabit";
+import { migrateHabitsToCommitments } from "./app/store/migrateData.js";
+import { store } from "./app/store/index.js";
 
 /**
- * Renders the UI for the selected habit.
+ * Renders the UI for the selected commitment.
  * Updates localStorage and store, then re-renders the calendar.
  */
-function renderUIForHabit(habit) {
-  localStorage.setItem("currentHabit", habit);
-  store.setActiveHabit(habit);
+function renderUIForCommitment(id) {
+  store.setActiveCommitment(id);
   calendarUI.render();
 }
 
-// Optionally expose globally if needed
-window.renderUIForHabit = renderUIForHabit;
+// Expose debug and migration tools globally
+window.migrateHabitsToCommitments = migrateHabitsToCommitments;
+window.renderUIForCommitment = renderUIForCommitment;
+window.store = store;
 
 document.addEventListener("DOMContentLoaded", () => {
   try {

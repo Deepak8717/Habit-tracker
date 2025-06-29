@@ -1,7 +1,6 @@
 # Leverage
 
 A tool to keep your promises to yourself—when things get heavy.
-
 This isn’t a tracker. It’s a crowbar.  
 You pull, you show up, and the system remembers. It doesn’t reset. It compounds.
 

@@ -4,18 +4,35 @@ This is an offline-first **leverage engine**—a system that applies and remembe
 
 ---
 
+## CTO-Level Responsibility
+
+AI’s primary role is **architectural foresight**:
+
+- Think in systems and cycles, not just features
+- Prevent fragmentation
+- Keep model coherence even during refactors
+- Push for decoupling, scaling, and local-first resilience
+
+> This user is a high-context thinker with junior dev skills. AI must be the structural anchor.
+
+---
+
 ## Philosophy
 
 - **Commitments as Leverage Points**  
-  Each is a promise you keep. Nothing passive. No automation.
+  Each is a conscious promise. Not a checklist. Not a habit.
+
 - **Effort > Perfection**  
-  Slots penalize failure but preserve momentum.
+  The system rewards momentum. It remembers effort, even if you break.
+
 - **Neuroplasticity Engine**  
-  Repetition under tension rewires behavior.
+  Behavior rewires under pressure. Repetition builds new identity.
+
 - **Local-First Memory**  
-  All data stays with the user. No cloud dependency.
-- **No Lock-In**  
-  Open source values. Modular, forkable, editable.
+  All data stays on-device. No cloud dependency. Sovereign logs.
+
+- **Modular by Default**  
+  Open source values. Nothing hardcoded. Everything overrideable.
 
 ---
 
@@ -23,49 +40,18 @@ This is an offline-first **leverage engine**—a system that applies and remembe
 
 ### `commitmentRegistry`
 
-Where all user-defined commitments live. Includes name and optional config (rules, weight, etc.).
+Metadata for each user-defined promise. Stored locally.
 
 ```js
 {
-  commitment_001: { name: "Stay sober", createdAt: "2025-06-10", config: {} },
-  commitment_002: { name: "Deep study", createdAt: "2025-06-15", config: { penalty: 2 } }
-}
-```
-
-### `commitmentLog`
-
-Logs applied pressure (slots) per date per commitment. Can be extended with score, tags, notes, etc.
-
-```js
-{
-  "2025-06-24": {
-    commitment_001: { slots: [2, 4, 6], timestamp: 1722074000000 },
-    commitment_002: { slots: [8, 10], timestamp: 1722074600000 }
+  commitment_001: {
+    name: "Stay sober",
+    createdAt: 1721000000000,
+    config: {
+      mode: "full-day",
+      frequency: "daily",
+      color: "#2ecc40"
+    }
   }
 }
 ```
-
----
-
-## Code Style
-
-- Functions declared first, called last
-- Pure logic separated from interface
-- Invite refactor, avoid tight coupling
-- Code should describe pressure, not hide it
-
----
-
-## Modules
-
-- `/store`: state logic, slot system, scoring engine
-- `/calendar`: visual feedback of applied force
-- `/ui/popups`: adjust slots, apply scores
-- `/firebase.js`: optional sync (fully isolated)
-- `/main.js`: system boot, hydration, orchestration
-
----
-
-## Final Word
-
-This is a **neural force logger**. A version control system for who you're becoming. You apply pressure. The lever remembers. Over time, it shifts weight you didn’t think you could move.
