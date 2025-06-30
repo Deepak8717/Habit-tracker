@@ -18,7 +18,7 @@ export default class SlotPopup {
     const allSelected = timeSlots.every((slot) => activeSlots.includes(slot));
 
     return `
-      <h3>Select Time Slots for ${this.date}</h3>
+      <h3>Time Slots</h3>
       <div class="popup-header">
         <label class="select-all-label">
           <input type="checkbox" id="select-all-checkbox" ${

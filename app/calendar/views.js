@@ -94,22 +94,15 @@ export function refreshState() {
   const commitmentId = store.activeCommitmentId;
   if (!commitmentId) return;
 
-  // Get all dates in the calendar year (or desired range)
   const calendarDates = CalendarData.generateYearlyCalendar().flatMap((month) =>
     month.days.map((day) => day.date)
   );
-
-  // Get all dates with slots, sorted
   const allDates = Object.keys(store.log)
     .filter((date) => store.getSlots(commitmentId, date).length > 0)
     .sort();
 
   recordedDaysSet = new Set(allDates);
-
-  // Build cumulative score history for all days with slots
   const history = generateHistory(allDates);
-
-  // Map date -> cumulativeScore for all calendar dates, filling forward
   scoreByDate = {};
   let lastScore = 0;
   let historyIdx = 0;
