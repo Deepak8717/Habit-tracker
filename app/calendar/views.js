@@ -3,6 +3,7 @@ import SlotPopup from "../ui/popups/slotPopup.js";
 import { generateHistory } from "../core/scoring.js";
 import { store } from "../store/index.js";
 import PopupHost from "../ui/popups/popupHost.js";
+import { toLocalDateString } from "../utils.js";
 const calendarContainer = document.getElementById("calendar");
 
 let recordedDaysSet = new Set();
@@ -10,9 +11,7 @@ let scoreByDate = {};
 let commitmentStartDate = null;
 
 function normalize(date) {
-  const d = new Date(date);
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); // Shift to local time
-  return d.toISOString().slice(0, 10);
+  return toLocalDateString(date);
 }
 
 function createDayButton(day) {

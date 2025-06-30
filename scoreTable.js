@@ -1,11 +1,9 @@
 import { store } from "./app/store/index.js";
 import { generateHistory } from "./app/core/scoring.js";
+import { toLocalDateString } from "./../app/utils.js";
 
 function formatDateShort(date) {
-  const d = String(date.getDate()).padStart(2, "0");
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const y = String(date.getFullYear()).slice(-2);
-  return `${d}/${m}/${y}`;
+  return toLocalDateString(date);
 }
 
 function formatDateISO(date) {

@@ -1,8 +1,9 @@
 import { createCommitment, isValidCommitment } from "./registry.js";
 import { scoreCalculation } from "../core/scoring.js";
+import { toLocalDateString } from "../utils.js";
 
 function normalizeDate(date) {
-  return new Date(date).toISOString().slice(0, 10);
+  return toLocalDateString(date);
 }
 
 export default class CommitmentStore {

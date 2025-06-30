@@ -1,5 +1,7 @@
+import { toLocalDateString } from "../utils.js";
+
 function formatDate(date) {
-  return date.toLocaleDateString("en-CA");
+  return toLocalDateString(date);
 }
 
 function getWeekday(date) {

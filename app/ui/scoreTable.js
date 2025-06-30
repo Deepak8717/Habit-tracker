@@ -1,3 +1,9 @@
+import { toLocalDateString } from "../utils.js";
+
+function formatDateShort(date) {
+  return toLocalDateString(date);
+}
+
 export function renderScoreTable(history, { formatDate, columns } = {}) {
   const defaultColumns = [
     { key: "index", label: "Day" },
@@ -37,7 +43,7 @@ export function renderScoreTable(history, { formatDate, columns } = {}) {
 
       if (col.key === "index") value = idx + 1;
       else if (col.key === "day")
-        value = formatDate ? formatDate(entry.day) : entry.day;
+        value = formatDate ? formatDate(entry.day) : formatDateShort(entry.day);
       else value = entry[col.key];
 
       if (col.key === "penaltyPoints") {

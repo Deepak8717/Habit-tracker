@@ -2,13 +2,10 @@ import { store } from "../store/index.js";
 import { generateHistory } from "../core/scoring.js";
 import { renderScoreTable } from "./scoreTable.js";
 import PopupManager from "./popups/popupHost.js";
+import { toLocalDateString } from "../utils.js";
 
 function formatDateShort(date) {
-  const dObj = typeof date === "string" ? new Date(date) : date;
-  const d = String(dObj.getDate()).padStart(2, "0");
-  const m = String(dObj.getMonth() + 1).padStart(2, "0");
-  const y = String(dObj.getFullYear()).slice(-2);
-  return `${d}/${m}/${y}`;
+  return toLocalDateString(date);
 }
 
 export function showScoreTable() {
