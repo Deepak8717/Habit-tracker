@@ -2,7 +2,7 @@ import CalendarData from "./data.js";
 import SlotPopup from "../ui/popups/slotPopup.js";
 import { generateHistory } from "../core/scoring.js";
 import { store } from "../store/index.js";
-
+import PopupHost from "../ui/popups/popupHost.js";
 const calendarContainer = document.getElementById("calendar");
 
 let recordedDaysSet = new Set();
@@ -62,11 +62,6 @@ function updateDayButton(btn, date, todayStageClass) {
   if (stageClass === todayStageClass) {
     btn.classList.add("current-stage");
   }
-}
-
-function refreshDayButton(date) {
-  const btn = document.querySelector(`[data-date="${date}"]`);
-  if (btn) updateDayButton(btn, date);
 }
 
 export function renderCalendarUI() {
@@ -133,10 +128,7 @@ function setupEventListeners() {
   calendarContainer.addEventListener("click", (e) => {
     if (!e.target.classList.contains("day-btn")) return;
     const date = e.target.dataset.date;
-    SlotPopup.open(date).then(() => {
-      refreshState();
-      renderCalendarUI();
-    });
+    PopupHost.show(new SlotPopup(date));
   });
 
   document.addEventListener("habitSlotChange", (e) => {
