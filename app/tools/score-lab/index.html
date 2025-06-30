@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Score Lab</title>
+    <link rel="stylesheet" href="../../css/base.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../ui/scoreTable.css" />
+    <style>
+      body {
+        padding: 2rem;
+        font-family: sans-serif;
+        background: #0a0a0a;
+        color: #ccc;
+      }
+      .controls {
+        margin-bottom: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      textarea,
+      input[type="text"],
+      input[type="number"] {
+        background: #1e1e1e;
+        color: #eee;
+        border: 1px solid #444;
+        padding: 0.5rem;
+        width: 100%;
+      }
+      label {
+        display: block;
+        font-weight: bold;
+        margin-top: 1rem;
+      }
+      .control-block {
+        max-width: 300px;
+        flex: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Score Lab</h1>
+
+    <div class="controls">
+      <div class="control-block">
+        <label>Mode</label>
+        <select id="mode">
+          <option value="real">Real (from store)</option>
+          <option value="fictional">Fictional (generate from missed)</option>
+        </select>
+      </div>
+
+      <div class="control-block">
+        <label>Missed Days (YYYY-MM-DD, one per line)</label>
+        <textarea id="missedDays" rows="8"></textarea>
+      </div>
+
+      <div class="control-block">
+        <label>Scoring Config (JSON)</label>
+        <textarea id="configInput" rows="8"></textarea>
+      </div>
+    </div>
+    <div class="control-block">
+      <label>Start Date (Fictional Mode Only)</label>
+      <input type="date" id="startDate" />
+    </div>
+
+    <div id="score-lab-root"></div>
+
+    <script type="module" src="./simulate.js"></script>
+    "
+  </body>
+</html>

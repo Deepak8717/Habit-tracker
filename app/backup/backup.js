@@ -9,7 +9,9 @@ import {
 
 // --- Config ---
 const FIREBASE_BACKUP_KEY = "firebaseBackupTime";
-const HABIT_DATA_KEY = "habitData";
+const HABIT_DATA_KEY = "habitData"; // Legacy key for old habit data
+const LEGACY_KEY = "habitData";
+const COMMIT_KEYS = ["commitmentRegistry", "commitmentLog"];
 const HABIT_USER_ID_KEY = "habitUserId";
 const BACKUP_INTERVAL = 1000 * 60 * 60 * 24 * 3; // 3 days
 
@@ -69,16 +71,29 @@ export async function forceFirebaseBackup() {
   }
 }
 
-// --- Local Backup Tools ---
 export function downloadHabitData() {
-  const data = localStorage.getItem(HABIT_DATA_KEY);
-  if (!data) return alert("No habit data found in localStorage.");
+  const payload = {};
 
-  const blob = new Blob([data], { type: "application/json" });
+  let found = false;
+  for (const key of COMMIT_KEYS) {
+    const data = localStorage.getItem(key);
+    if (data) {
+      payload[key] = JSON.parse(data);
+      found = true;
+    }
+  }
+
+  if (!found) return alert("No commitment data found in localStorage.");
+
+  const blob = new Blob([JSON.stringify(payload)], {
+    type: "application/json",
+  });
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `habitData-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.download = `commitment-backup-${new Date()
+    .toISOString()
+    .slice(0, 10)}.json`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -90,11 +105,41 @@ export function uploadHabitDataFile(file) {
   reader.onload = function (event) {
     try {
       const parsed = JSON.parse(event.target.result);
-      localStorage.setItem(HABIT_DATA_KEY, JSON.stringify(parsed));
-      alert("✅ Habit data restored. Refresh to apply changes.");
+
+      // Legacy format detection: YYYY-MM-DD keys with sobriety or slots inside
+      const isLegacy =
+        typeof parsed === "object" &&
+        Object.keys(parsed).every((k) => /^\d{4}-\d{2}-\d{2}$/.test(k)) &&
+        typeof parsed[Object.keys(parsed)[0]] === "object";
+
+      if (isLegacy) {
+        localStorage.setItem("habitData", JSON.stringify(parsed));
+        console.log("🕰️ Legacy data uploaded. Initiating migration...");
+        migrateHabitsToCommitments(); // auto-run migration
+        alert("✅ Legacy data uploaded and migrated.");
+        return;
+      }
+
+      // New commitment-based format
+      const keys = ["commitmentRegistry", "commitmentLog"];
+      let restored = false;
+      for (const key of keys) {
+        if (parsed[key]) {
+          localStorage.setItem(key, JSON.stringify(parsed[key]));
+          restored = true;
+        }
+      }
+
+      if (restored) {
+        alert("✅ Commitment data restored.");
+      } else {
+        alert("❌ Unrecognized file format.");
+      }
     } catch (e) {
-      alert("❌ Invalid habit data file.");
+      alert("❌ Invalid file.");
+      console.error(e);
     }
   };
+
   reader.readAsText(file);
 }

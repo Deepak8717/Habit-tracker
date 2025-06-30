@@ -27,12 +27,20 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 20px;
   background: #212121eb;
-  padding: var(--space-xl);
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   z-index: 100;
   color: #fff;
+  background: rgba(30, 30, 36, 0.96);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+@media screen and (max-width: 600px) {
+  .popup {
+    padding: 5px;
+  }
 }
 .popup-overlay {
   position: fixed;
@@ -118,18 +126,18 @@ table {
   margin-bottom: 40px;
 }
 
-th,
+/* th,
 td {
   border: 1px solid #bbb;
   padding: 8px 12px;
   text-align: center;
-}
+} */
 
-th {
+/* th {
   background: #333;
   color: #fff;
-}
+} */
 
-tbody tr:nth-child(even) {
+/* tbody tr:nth-child(even) {
   background: #eee;
-}
+} */

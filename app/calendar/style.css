@@ -7,19 +7,22 @@
   margin: 2rem auto;
   justify-content: center;
   align-items: start;
+  padding: 1rem 0;
+  gap: 2rem;
 }
 
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.3);
-  padding: 1rem;
+  padding: 1.2rem;
+  gap: 2px;
+  margin-top: 20px;
 }
 
 .day-btn {
@@ -36,12 +39,20 @@
   transition: opacity 0.2s;
   border-radius: 5px;
   margin: 2px;
+  background: #1a1f24;
+  box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.05),
+    0 0 3px rgba(0, 0, 0, 0.6);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
 }
 
 .day-btn:hover {
-  opacity: 0.5;
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
 }
-
+.day-btn:active {
+  transform: scale(0.95);
+}
 .day-btn.selected {
   background-color: var(--color-primary);
   color: white;
@@ -58,114 +69,34 @@
   font-weight: bold;
 }
 
-.score-1 {
-  background: #7fb800;
-  color: #1a1f24;
-}
-.score-2 {
-  background: #28a428;
+.stage-init-zero {
+  background: hsl(75, 45%, 40%);
   color: #0f1419;
 }
 
-.score-3 {
-  background-color: #0a6b0a;
-  background-image: radial-gradient(circle, #00000060 10%, #00640020 11%);
-  background-size: 16px 10px;
-  color: #e8f4f8;
+.stage-init-early {
+  background: hsl(120, 50%, 42%);
+  color: #0f1419;
 }
-.score-4 {
-  background-color: #0ae17e63;
-  background-image: linear-gradient(
-    78deg,
-    #007a00 0%,
-    #007a00 -50%,
-    transparent 5%,
-    #00000000 5%,
-    #005000 10%,
-    #005000 15%,
-    transparent 15%,
-    transparent 20%,
-    #007a00 20%,
-    #042f04 25%,
-    transparent 25%,
-    transparent 30%,
-    #005000 30%,
-    #005000 35%,
-    transparent 35%,
-    transparent 40%,
-    #007a00 40%,
-    #007a00 45%,
-    transparent 45%,
-    transparent 50%,
-    #005000 50%,
-    #005000 55%,
-    #000000 55%,
-    #fff9f900 60%,
-    #007a00 60%,
-    #007a00 65%,
-    transparent 65%,
-    transparent 70%,
-    #005000 70%,
-    #005000 75%,
-    transparent 75%,
-    transparent 80%,
-    #007a00 104%,
-    #007a00 42%,
-    #41282800 96%,
-    transparent 90%,
-    #005000 90%,
-    #005000 95%,
-    transparent 95%
-  );
-  background-size: 1em 1em;
-  color: #ffffff;
-}
-.score-5 {
-  background-color: #02632e;
-  background-image: linear-gradient(
-      575deg,
-      transparent 24%,
-      #000a05 25%,
-      #011409 30%,
-      transparent 31%,
-      #d5cccc00 39%,
-      #011208 40%,
-      #001a0b 45%,
-      transparent 46%
-    ),
-    linear-gradient(
-      324deg,
-      transparent -9%,
-      #011a0c 25%,
-      #0f3f23 30%,
-      #00000073 31%,
-      #08030300 39%,
-      #000000 40%,
-      #000e06 45%,
-      #f1ebeb26 46%
-    );
-  background-size: 1em 1em;
-  color: #fff;
-}
-.score-7 {
-  background-color: #1b5e20;
-  color: white;
+
+.stage-init-late {
+  background: #599f4d; /* mature healthy green */
+  color: #f6fff8;
 }
 
 .fail-day {
   position: relative;
-  border: 1px solid #6b3548;
 }
 
 .fail-day::after,
 .fail-day::before {
   content: "";
   position: absolute;
-  width: 60%;
-  height: 1.5px;
-  background: rgba(236, 182, 182, 0.7);
-  top: 50%;
-  left: 5px;
+  width: 66%;
+  height: 2px;
+  background: rgb(189 105 105);
+  top: 46%;
+  left: 6px;
   transform-origin: center;
   pointer-events: none;
 }
@@ -175,8 +106,28 @@
 .fail-day::before {
   transform: rotate(-45deg);
 }
+.current-stage {
+  font-weight: bold;
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
 
-/* Responsive layout tweaks */
+.month-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.month-header {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #888;
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+  font-weight: 600;
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
 @media (max-width: 1024px) {
   #calendar {
     grid-template-columns: repeat(3, auto);

@@ -31,7 +31,20 @@ function createEmptySlots(n) {
   });
 }
 
-function updateDayButton(btn, date) {
+function getStageClass(score) {
+  if (score >= 2001) return "stage-epic";
+  if (score >= 1750) return "stage-legend-late";
+  if (score >= 1501) return "stage-legend-early";
+  if (score >= 1250) return "stage-advanced-late";
+  if (score >= 1001) return "stage-advanced-early";
+  if (score >= 750) return "stage-middle-late";
+  if (score >= 501) return "stage-middle-early";
+  if (score >= 250) return "stage-init-late";
+  if (score >= 100) return "stage-init-early";
+  return "stage-init-zero";
+}
+
+function updateDayButton(btn, date, todayStageClass) {
   const today = normalize(new Date());
   const isFuture = date > today;
   const isBeforeStart =
@@ -44,9 +57,11 @@ function updateDayButton(btn, date) {
     return;
   }
   const score = scoreByDate[date] || 0;
-  const threshold = score === 0 ? 0 : Math.floor((score - 1) / 50) + 1;
-  const capped = Math.min(threshold, 8);
-  btn.classList.add(`score-${capped}`);
+  const stageClass = getStageClass(score);
+  btn.classList.add(stageClass);
+  if (stageClass === todayStageClass) {
+    btn.classList.add("current-stage");
+  }
 }
 
 function refreshDayButton(date) {
@@ -59,6 +74,9 @@ export function renderCalendarUI() {
   calendarContainer.innerHTML = "";
 
   const months = CalendarData.generateYearlyCalendar();
+  const today = normalize(new Date());
+  const todayScore = scoreByDate[today] || 0;
+  const todayStageClass = getStageClass(todayScore);
 
   for (const month of months) {
     const grid = document.createElement("div");
@@ -69,7 +87,7 @@ export function renderCalendarUI() {
 
     for (const day of month.days) {
       const btn = createDayButton(day);
-      updateDayButton(btn, day.date);
+      updateDayButton(btn, day.date, todayStageClass);
       grid.appendChild(btn);
     }
 

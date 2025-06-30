@@ -1,5 +1,5 @@
-import { store } from "./app/store/store.js";
-import { generateHistory } from "./app/engine/scoringEngine.js";
+import { store } from "./app/store/index.js";
+import { generateHistory } from "./app/core/scoring.js";
 
 function formatDateShort(date) {
   const d = String(date.getDate()).padStart(2, "0");
