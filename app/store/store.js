@@ -1,6 +1,10 @@
 import { createCommitment, isValidCommitment } from "./registry.js";
 import { scoreCalculation } from "../core/scoring.js";
 import { toLocalDateString } from "../utils.js";
+import { STORAGE_KEYS } from "./storageKeys.js";
+
+const { CURRENT_COMMITMENT, COMMITMENT_REGISTRY, COMMITMENT_LOG } =
+  STORAGE_KEYS;
 
 function normalizeDate(date) {
   return toLocalDateString(date);

@@ -4,16 +4,16 @@ import { db } from "../firebase.js";
 import {
   doc,
   setDoc,
+  getDoc,
+  deleteDoc,
+  getDocs,
   collection,
 } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
 // --- Config ---
 const FIREBASE_BACKUP_KEY = "firebaseBackupTime";
-const HABIT_DATA_KEY = "habitData"; // Legacy key for old habit data
-const LEGACY_KEY = "habitData";
 const COMMIT_KEYS = ["commitmentRegistry", "commitmentLog"];
 const HABIT_USER_ID_KEY = "habitUserId";
-const BACKUP_INTERVAL = 1000 * 60 * 60 * 24 * 3; // 3 days
 
 // --- Utility ---
 function getUserId() {
@@ -31,25 +31,37 @@ function getReadableDocId(userId) {
   return `${ddmmyy}_${userId.slice(0, 6)}`;
 }
 
+function getBackupDocRef(userId, docId) {
+  return doc(collection(db, "backups", userId, "entries"), docId);
+}
+
 // --- Core Backup ---
 async function uploadBackup(data) {
   const userId = getUserId();
   const docId = getReadableDocId(userId);
-  const userCollection = collection(db, "backups", userId, "entries");
+  const docRef = getBackupDocRef(userId, docId);
 
-  await setDoc(doc(userCollection, docId), {
+  await setDoc(docRef, {
     data,
     timestamp: new Date().toISOString(),
   });
 
+  await pruneOldBackups(userId);
   localStorage.setItem(FIREBASE_BACKUP_KEY, Date.now());
   console.log(`✅ Firebase backup complete: ${docId}`);
 }
 
 export async function backupToFirebase() {
-  const last = parseInt(localStorage.getItem(FIREBASE_BACKUP_KEY) || 0);
-  if (Date.now() - last < BACKUP_INTERVAL) {
-    console.log("⏸️ Skipping Firebase backup: too soon.");
+  const origin = location.href;
+  const LIVE_URL_PREFIX = "https://deepak8717.github.io/Habit-tracker/";
+  if (!origin.startsWith(LIVE_URL_PREFIX)) {
+    console.log("🚫 Not on the live site. Skipping backup.");
+    return;
+  }
+
+  const today = new Date().getDay(); // Sunday = 0, Wednesday = 3
+  if (![0, 3].includes(today)) {
+    console.log("📅 Not a backup day (only Sunday/Wednesday). Skipping.");
     return;
   }
 
@@ -57,19 +69,48 @@ export async function backupToFirebase() {
 }
 
 export async function forceFirebaseBackup() {
-  const raw = localStorage.getItem(HABIT_DATA_KEY);
-  if (!raw) {
-    console.warn("⚠️ No habitData found for backup.");
+  const payload = {};
+
+  let found = false;
+  for (const key of COMMIT_KEYS) {
+    const data = localStorage.getItem(key);
+    if (data) {
+      payload[key] = JSON.parse(data);
+      found = true;
+    }
+  }
+
+  if (!found) {
+    console.warn("⚠️ No commitment data found for backup.");
     return;
   }
 
   try {
-    const parsed = JSON.parse(raw);
-    await uploadBackup(parsed);
+    await uploadBackup(payload);
   } catch (e) {
     console.error("❌ Backup failed:", e);
   }
 }
+
+async function pruneOldBackups(userId) {
+  const userCollection = collection(db, "backups", userId, "entries");
+  const snapshot = await getDocs(userCollection);
+
+  const now = Date.now();
+  const SEVEN_DAYS = 1000 * 60 * 60 * 24 * 7;
+
+  const deletions = snapshot.docs.filter((doc) => {
+    const ts = new Date(doc.data()?.timestamp || 0).getTime();
+    return now - ts > SEVEN_DAYS;
+  });
+
+  for (const docSnap of deletions) {
+    await deleteDoc(doc(userCollection, docSnap.id));
+    console.log(`🗑️ Deleted backup: ${docSnap.id}`);
+  }
+}
+
+// --- Manual Tools ---
 
 export function downloadHabitData() {
   const payload = {};
@@ -121,9 +162,8 @@ export function uploadHabitDataFile(file) {
       }
 
       // New commitment-based format
-      const keys = ["commitmentRegistry", "commitmentLog"];
       let restored = false;
-      for (const key of keys) {
+      for (const key of COMMIT_KEYS) {
         if (parsed[key]) {
           localStorage.setItem(key, JSON.stringify(parsed[key]));
           restored = true;
