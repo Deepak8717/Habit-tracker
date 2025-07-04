@@ -128,7 +128,7 @@
   font-family: "Inter", "Segoe UI", sans-serif;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1224px) {
   #calendar {
     grid-template-columns: repeat(3, auto);
     grid-template-rows: repeat(4, auto);
@@ -136,7 +136,7 @@
   }
 }
 
-@media (max-width: 764px) {
+@media (max-width: 964px) {
   #calendar {
     grid-template-columns: repeat(2, auto);
     grid-template-rows: repeat(6, auto);

@@ -1,4 +1,4 @@
-import calendarUI from "./app/calendar/views.js";
+import calendarUI from "./app/ui/calendar/views.js";
 import { backupToFirebase } from "./app/backup/backup.js";
 import { migrateHabitsToCommitments } from "./app/store/migrateData.js";
 import { store } from "./app/store/index.js";

@@ -1,7 +1,7 @@
 import { migrateHabitsToCommitments } from "../../store/migrateData.js";
 import PopupHost from "./popupHost.js";
 import UploadPopup from "./uploadPopup.js";
-import { showScoreTable } from "../showScoreTable.js";
+import { showScoreTable } from "../score-table/showScoreTable.js";
 
 export default class HamburgerMenu {
   constructor(currentHabit, habits, onSelect) {
